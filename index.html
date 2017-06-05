@@ -1,0 +1,91 @@
+<!-- 
+VR Zolly Meditative Breathing 
+-- Eddie Farr/code && Solomon Chase/aestheticoncepts --
+Copyright 2017
+
+todo:
+add js to change speed of cubes with controls, read this when not tired https://aframe.io/docs/0.5.0/introduction/interactions-and-controllers.html
+find audio and use it
+fix issue where floor take a while to load (smaller image probably)
+write function to add cubes to the scene 
+add splash page to choose options before starting 
+set up meeting with Solomon to work on the aesthetics
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Zen Zolly</title>
+    <meta name="description" content="Zen-Zolly">
+    <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+    <script src="https://npmcdn.com/aframe-animation-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-event-set-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-layout-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-template-component@3.1.1"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- templates -->
+      <a-assets> src="
+        <img id="floor" crossorigin="anonymous" src="https://cdn.glitch.com/2433bbb1-84c7-4c86-988d-f2ca7cc3c175%2Ffloor5.jpg?1496430568017">
+        <!-- cube template -->
+        <script id="box" type="text/html">
+          <a-entity 
+            geometry="primitive: box; scale 2 2 2;"
+            material="shader: flat; color: blue;"
+            light="type: point; intensity: 2.0;"
+            rotation="0 45 45;"
+            position="${position}"
+            animation__position="property: position; dur: 4000; to: ${to}; dir: alternate; loop: true; easing: easeInOutSine;"
+            animation__scale="property: scale; dur: 4000; to: 3 3 3; dir: alternate; loop: true; easing: easeInOutSine;"></a-entity>
+        </script>
+        <!-- tile template -->
+        <script id="tile" type="text/html">
+          <a-entity class="tile"
+            geometry="primitive: plane; height: 0.5; width: 0.5;"
+            material="shader: flat; color: ${color};"
+            rotation="-45 0 0;"
+            event-set__1="_event: mousedown; scale: 1 1 0;"
+            event-set__2="_event: mouseup; scale: 1.2 1.2 0;"
+            event-set__3="_event: mouseenter; scale: 1.2; 1.2 0"
+            event-set__4="_event: mouseleave; scale: 1 1 0;"></a-entity>
+        </script>
+      </a-assets>
+      <!-- cubes -->
+      <a-entity template="src: #box" data-position="0 2 -16" data-to="0 2 -8"></a-entity>
+      <a-entity template="src: #box" data-position="0 2 16" data-to="0 2 8"></a-entity>
+      <a-entity template="src: #box" data-position="-16 2 0" data-to="-8 2 0"></a-entity>
+      <a-entity template="src: #box" data-position="16 2 0" data-to="8 2 0"></a-entity>
+      <!-- menu -->
+      <a-entity id="tiles" layout="layout: line; margin: 0.75;" position="-0.75 0 -1">
+        <a-entity template="src: #tile" data-color="red"></a-entity>
+        <a-entity template="src: #tile" data-color="green"></a-entity>
+        <a-entity template="src: #tile" data-color="blue"></a-entity>
+      </a-entity>
+      <!-- world -->
+      <a-sky color="#000000" position="0 -1 0" radius="150"></a-sky>
+      <!-- floor -->
+      <a-entity geometry="primitive: plane"
+                material="color: white; src: #floor "
+                position="0 -4 0"
+                rotation="-90 0 0"
+                scale="50 50 0"
+                animation__scale="property: scale; dur: 4000; to: 75 75 0; dir: alternate; loop: true; easing: easeInOutSine;"></a-entity>
+      <!-- lighting -->
+      <a-light type="hemisphere" 
+               color="#fff"
+               groundcolor="#000"
+               intensity="0.6"></a-light>
+      <!-- interaction -->
+      <a-camera>
+        <a-cursor id="cursor"
+              animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
+              animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+              event-set__1="_event: mouseenter; color: springgreen"
+              event-set__2="_event: mouseleave; color: black"
+              fuse="true"
+              raycaster="objects: .tile">
+        </a-cursor>
+      </a-camera>
+   </a-scene>
+  </body>
+</html>
